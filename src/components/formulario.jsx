@@ -10,7 +10,7 @@ const Formulario = () => {
     modelo: "",
     precio: "",
     año: "",
-    motor: "",
+    imagen: "",
   });
   const [modoEdicion, setModoEdicion] = React.useState(false);
   const [error, setError] = React.useState(null);
@@ -33,17 +33,12 @@ const Formulario = () => {
   //     obtenerDatos();
   //   });
 
-  const obtenerImg = () => {
-    fetch("https://picsum.photos/seed/picsum/200/300");
-  };
-
   const guardarDatos = async (e) => {
     e.preventDefault();
     if (
       !componentes.marca.trim() ||
       !componentes.placa.trim() ||
       !componentes.color.trim() ||
-      !componentes.motor.trim() ||
       !componentes.año.trim() ||
       !componentes.modelo.trim() ||
       componentes.precio < 1
@@ -53,6 +48,10 @@ const Formulario = () => {
     }
 
     try {
+      const numero = Math.random() * (100 - 1) + 1;
+      const imagen = await fetch(
+        `https://picsum.photos/seed/${numero}/100/100`
+      );
       const db = firebase.firestore();
       const nuevoCarro = {
         placa: componentes.placa,
@@ -61,7 +60,7 @@ const Formulario = () => {
         modelo: componentes.modelo,
         precio: componentes.precio,
         año: componentes.año,
-        motor: componentes.motor,
+        imagen: imagen.url,
       };
       await db.collection("carros").add(nuevoCarro);
     } catch (error) {
@@ -76,7 +75,7 @@ const Formulario = () => {
       modelo: "",
       precio: "",
       año: "",
-      motor: "",
+      imagen: "",
     });
     setError(null);
   };
@@ -103,7 +102,7 @@ const Formulario = () => {
       !componentes.marca.trim() ||
       !componentes.placa.trim() ||
       !componentes.color.trim() ||
-      !componentes.motor.trim() ||
+      !componentes.imagen.trim() ||
       !componentes.año.trim() ||
       !componentes.modelo.trim() ||
       componentes.precio < 1
@@ -121,7 +120,7 @@ const Formulario = () => {
         modelo: componentes.modelo,
         precio: componentes.precio,
         año: componentes.año,
-        motor: componentes.motor,
+        imagen: componentes.imagen,
       });
     } catch (error) {
       console.log(error);
@@ -133,7 +132,7 @@ const Formulario = () => {
       modelo: "",
       precio: "",
       año: "",
-      motor: "",
+      imagen: "",
     });
     setModoEdicion(false);
     setError(null);
@@ -147,7 +146,7 @@ const Formulario = () => {
       modelo: "",
       precio: "",
       año: "",
-      motor: "",
+      imagen: "",
     });
     setModoEdicion(false);
     setError(null);
@@ -168,7 +167,10 @@ const Formulario = () => {
               <li className="list-group-item" key={item.id}>
                 <span className="lead">
                   {item.marca} - {item.modelo} - {item.color} - {item.placa} -{" "}
-                  {item.año} - {item.precio} - {item.motor}
+                  {item.año} - {item.precio}
+                </span>
+                <span>
+                  <img src={item.imagen} alt="img" />
                 </span>
                 <button
                   className="btn btn-danger btn-sm float-end mx-2"
@@ -245,15 +247,6 @@ const Formulario = () => {
                 setComponentes({ ...componentes, precio: e.target.value })
               }
               value={componentes.precio}
-            />
-            <input
-              className="form-control mb-2"
-              type="text"
-              placeholder="Ingrese motor"
-              onChange={(e) =>
-                setComponentes({ ...componentes, motor: e.target.value })
-              }
-              value={componentes.motor}
             />
             {!modoEdicion ? (
               <button className="btn btn-primary btn-block" type="submit">
