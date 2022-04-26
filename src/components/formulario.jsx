@@ -16,22 +16,22 @@ const Formulario = () => {
   const [error, setError] = React.useState(null);
   const [id, setId] = React.useState("");
 
-  //   React.useEffect(() => {
-  //     const obtenerDatos = async () => {
-  //       try {
-  //         const db = firebase.firestore();
-  //         const data = await db.collection("carros").get();
-  //         const array = data.docs.map((item) => ({
-  //           id: item.id,
-  //           ...item.data(),
-  //         }));
-  //         setLista(array);
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     };
-  //     obtenerDatos();
-  //   });
+  React.useEffect(() => {
+    const obtenerDatos = async () => {
+      try {
+        const db = firebase.firestore();
+        const data = await db.collection("carros").get();
+        const array = data.docs.map((item) => ({
+          id: item.id,
+          ...item.data(),
+        }));
+        setLista(array);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    obtenerDatos();
+  }, []);
 
   const guardarDatos = async (e) => {
     e.preventDefault();
